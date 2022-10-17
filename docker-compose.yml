@@ -12,8 +12,6 @@ services:
       - postgres:/data/postgres
     ports:
       - "5432:5432"
-    networks:
-      - postgres
     restart: unless-stopped
 
   bank-core:
@@ -22,8 +20,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8081:8081"
-    networks:
-      - bank
+    links:
+      - postgres
+    depends_on:
+      - postgres
 
   atm-client:
     build:
@@ -31,9 +31,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
-    networks:
-      - bank
-      - host
+    links:
+      - bank-core
+    depends_on:
+      - bank-core
 
 networks:
   postgres:
