@@ -18,8 +18,8 @@ services:
 
   bank-core:
     build:
-      context: ''
-      dockerfile: bank-core-service/Dockerfile
+      context: bank-core-service
+      dockerfile: Dockerfile
     ports:
       - "8081:8081"
     networks:
@@ -27,8 +27,8 @@ services:
 
   atm-client:
     build:
-      context: ''
-      dockerfile: atm-client/Dockerfile
+      context: atm-client
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     networks:
@@ -37,11 +37,8 @@ services:
 
 networks:
   postgres:
-    driver: bridge
   bank:
-    driver: bank
   host:
-    driver: host
     external: true
 
 volumes:

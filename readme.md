@@ -16,6 +16,7 @@ Docker compose has 3 services
 
 
 ```
+docker compose build
 docker-compose up
 ```
 
