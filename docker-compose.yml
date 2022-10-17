@@ -6,7 +6,7 @@ services:
     image: postgres
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       PGDATA: /data/postgres
     volumes:
       - postgres:/data/postgres
@@ -16,13 +16,33 @@ services:
       - postgres
     restart: unless-stopped
 
+  bank-core:
+    build:
+      context: ''
+      dockerfile: bank-core-service/Dockerfile
+    ports:
+      - "8081:8081"
+    networks:
+      - bank
 
+  atm-client:
+    build:
+      context: ''
+      dockerfile: atm-client/Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - bank
+      - host
 
 networks:
   postgres:
     driver: bridge
+  bank:
+    driver: bank
+  host:
+    driver: host
+    external: true
 
 volumes:
   postgres:
-  pgadmin:
-  Footer
