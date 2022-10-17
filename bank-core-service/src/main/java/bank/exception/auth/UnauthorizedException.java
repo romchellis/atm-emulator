@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import bank.exception.BusinessLogicException;
 
 public class UnauthorizedException extends BusinessLogicException {
+
     public UnauthorizedException() {
         super("Not authorized");
     }
@@ -12,5 +13,9 @@ public class UnauthorizedException extends BusinessLogicException {
     @Override
     public HttpStatus httpStatus() {
         return HttpStatus.UNAUTHORIZED;
+    }
+
+    public static UnauthorizedException unauthorizedException() {
+        return new UnauthorizedException();
     }
 }

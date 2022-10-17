@@ -13,4 +13,8 @@ public class SessionHasExpiredException extends BusinessLogicException {
     public HttpStatus httpStatus() {
         return HttpStatus.UNAUTHORIZED;
     }
+
+    public static SessionHasExpiredException sessionHasExpiredException() {
+        return new SessionHasExpiredException();
+    }
 }

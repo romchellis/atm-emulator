@@ -21,7 +21,6 @@ public class AccountController {
 
     private final AccountApi accountApi;
 
-
     @GetMapping("/amount")
     public TotalAmountResult amount() {
         return accountApi.amount();

@@ -10,7 +10,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import bank.LoginMethod;
+import bank.auth.LoginMethod;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

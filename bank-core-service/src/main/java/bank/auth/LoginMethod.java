@@ -1,4 +1,4 @@
-package bank;
+package bank.auth;
 
 public enum LoginMethod {
     PIN,

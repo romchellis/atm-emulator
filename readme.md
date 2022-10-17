@@ -16,6 +16,7 @@ Docker compose has 3 services
 
 
 ```
+mvn install
 docker compose build
 docker-compose up
 ```
@@ -27,3 +28,4 @@ docker-compose up
 3) Https
 4) Concurrency control
 5) Password encoding
+6) Logging

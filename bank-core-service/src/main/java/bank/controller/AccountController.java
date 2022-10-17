@@ -1,5 +1,6 @@
 package bank.controller;
 
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import api.AccountApi;
@@ -12,6 +13,7 @@ import result.TotalAmountResult;
 import result.WithdrawResult;
 
 @RestController
+@RequestMapping("account")
 @RequiredArgsConstructor
 public class AccountController implements AccountApi {
 
@@ -31,6 +33,5 @@ public class AccountController implements AccountApi {
     public DepositResult deposit(DepositRequest request) {
         return accountService.deposit(request);
     }
-
 
 }

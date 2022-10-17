@@ -1,17 +1,15 @@
 package bank.client;
 
-import static java.util.Optional.ofNullable;
-import static org.springframework.web.util.WebUtils.getCookie;
+import static bank.util.TokenUtil.getAuthToken;
+import static bank.exception.auth.UnauthorizedException.unauthorizedException;
+import static bank.jooq.generated.model.tables.Account.ACCOUNT;
+import static bank.jooq.generated.model.tables.CardSession.CARD_SESSION;
 
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import bank.exception.auth.UnauthorizedException;
-import bank.jooq.generated.model.tables.Account;
-import bank.jooq.generated.model.tables.CardSession;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -23,14 +21,15 @@ public class SimpleClientService implements ClientService {
 
     @Override
     public Integer getCurrentClientId() {
-        final var authorisation = ofNullable(getCookie(request, "Authorization"))
-                .map(Cookie::getValue)
-                .orElseThrow(UnauthorizedException::new);
+        final var token = getAuthToken(request);
+        if (token == null) {
+            throw unauthorizedException();
+        }
 
-        return dslContext.select(Account.ACCOUNT.CLIENT_ID)
-                .from(Account.ACCOUNT)
-                .leftJoin(CardSession.CARD_SESSION)
-                .on(CardSession.CARD_SESSION.TOKEN.eq(authorisation))
+        return dslContext.select(ACCOUNT.CLIENT_ID)
+                .from(ACCOUNT)
+                .leftJoin(CARD_SESSION)
+                .on(CARD_SESSION.TOKEN.eq(token))
                 .fetchAnyInto(Integer.class);
     }
 

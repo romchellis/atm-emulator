@@ -1,11 +1,11 @@
-package bank.exception;
+package atm.exception;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
-public class ErrorResponse {
+public class BankApiErrorResponse {
     private final String body;
-    private final Integer status;
+    private final int status;
 }

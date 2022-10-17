@@ -1,15 +1,19 @@
 package api;
 
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 
-import result.LoginResult;
-import request.PreferableLoginMethodRequest;
+import config.FeignConfig;
 import request.LoginRequest;
+import request.PreferableLoginMethodRequest;
+import result.LoginResult;
 import result.PreferableLoginMethodResult;
 
-@RequestMapping("auth")
+@FeignClient(name = "authApi",
+        url = "http://" + "${bank.api.host}" + ":${bank.api.port}",
+        path = "/auth",
+        configuration = FeignConfig.class)
 public interface AuthApi {
 
     @PostMapping("/login")

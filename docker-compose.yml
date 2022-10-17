@@ -2,26 +2,27 @@ version: '3.5'
 
 services:
   postgres:
-    container_name: postgres_container
     image: postgres
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      PGDATA: /data/postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/data/postgres
     volumes:
       - postgres:/data/postgres
-    ports:
-      - "5432:5432"
+    networks:
+      - postgres_network
     restart: unless-stopped
 
   bank-core:
     build:
       context: bank-core-service
       dockerfile: Dockerfile
-    ports:
-      - "8081:8081"
-    links:
-      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/
+      - DB_HOST=postgres
+    networks:
+      - bank_network
+      - postgres_network
     depends_on:
       - postgres
 
@@ -29,16 +30,20 @@ services:
     build:
       context: atm-client
       dockerfile: Dockerfile
+    environment:
+      - SERVER_PORT=8080
+      - bank_api_host=bank-core
+      - bank_api_port=8081
     ports:
       - "8080:8080"
-    links:
-      - bank-core
+    networks:
+      - bank_network
     depends_on:
       - bank-core
 
 networks:
-  postgres:
-  bank:
+  postgres_network:
+  bank_network:
   host:
     external: true
 
