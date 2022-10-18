@@ -10,5 +10,8 @@ import lombok.RequiredArgsConstructor;
 @Builder
 @RequiredArgsConstructor
 public class WithdrawRequest {
+    /**
+     * Amount to withdraw
+     */
     private final BigDecimal amount;
 }

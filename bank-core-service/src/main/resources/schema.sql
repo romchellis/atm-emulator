@@ -27,9 +27,9 @@ CREATE TABLE card
     number            NUMERIC(16) UNIQUE          NOT NULL,
     account_id        INT REFERENCES account (id) NOT NULL,
     password          TEXT                        NOT NULL,
-    blocked_timestamp TIMESTAMP DEFAULT NULL,
+    blocked_timestamp TIMESTAMP                            DEFAULT NULL,
     issued_until      TIMESTAMP                   NOT NULL,
-    login_method      TEXT
+    login_method      TEXT                        NOT NULL DEFAULT 'PIN'
 );
 CREATE TABLE card_login_unsuccessful_attempt
 (
@@ -46,8 +46,6 @@ CREATE TABLE card_session
     token       TEXT        NOT NULL,
     card_number NUMERIC(16) NOT NULL REFERENCES card (number)
 );
-
-
 
 INSERT INTO client (id, first_name, last_name) OVERRIDING SYSTEM VALUE
 VALUES (1, 'Roman', 'Oborin'),

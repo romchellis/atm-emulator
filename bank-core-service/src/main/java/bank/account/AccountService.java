@@ -6,6 +6,9 @@ import result.DepositResult;
 import result.TotalAmountResult;
 import result.WithdrawResult;
 
+/**
+ * Service for basic account operations through the card session
+ */
 public interface AccountService {
 
     TotalAmountResult amount();

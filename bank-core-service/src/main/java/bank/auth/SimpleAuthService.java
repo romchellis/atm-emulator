@@ -24,34 +24,46 @@ import bank.jooq.generated.model.tables.records.CardRecord;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import request.LoginRequest;
 import request.PreferableLoginMethodRequest;
 import result.LoginResult;
 import result.PreferableLoginMethodResult;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class SimpleAuthService implements AuthService {
 
     @Value("${card.session.time-to-live}")
     private Long tokenTimeToLive;
+
     private final DSLContext dslContext;
+    private final CardSessionService cardSessionService;
 
     @Override
     @Transactional(noRollbackFor = Exception.class)
     public LoginResult login(LoginRequest loginRequest) {
-        var cardNumber = loginRequest.getCardNumber();
-        var password = loginRequest.getPassword();
+        final var cardNumber = loginRequest.getCardNumber();
+        final var password = loginRequest.getPassword();
         final var cardRecord = fetchCardByNumber(cardNumber);
         throwIfCardBlocked(cardNumber, cardRecord);
         storeAttemptIfUnsucsefful(cardRecord, password);
-        final String token = generateToken(cardNumber);
+        final var token = generateToken(cardNumber);
+        log.info("Token sucessfully genereated for card number {}", cardNumber);
         return new LoginResult(token);
     }
 
     @Override
     public PreferableLoginMethodResult setPreferableLoginMethod(PreferableLoginMethodRequest request) {
-        throw new UnsupportedOperationException();
+        final var cardId = cardSessionService.fetchCurrentSessionCardId();
+        final var loginMethod = request.getLoginMethod();
+        dslContext.update(CARD)
+                .set(CARD.LOGIN_METHOD, loginMethod.name())
+                .where(CARD.ID.eq(cardId))
+                .execute();
+        log.info("Login method for card id {} was changed to {}", cardId, loginMethod);
+        return PreferableLoginMethodResult.success();
     }
 
     private void throwIfCardBlocked(Long cardNumber, CardRecord cardRecord) {

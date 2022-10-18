@@ -1,6 +1,6 @@
 package bank.client;
 
-import static bank.util.TokenUtil.getAuthToken;
+import static bank.util.TokenUtil.authTokenOrNull;
 import static bank.exception.auth.UnauthorizedException.unauthorizedException;
 import static bank.jooq.generated.model.tables.Account.ACCOUNT;
 import static bank.jooq.generated.model.tables.CardSession.CARD_SESSION;
@@ -21,7 +21,7 @@ public class SimpleClientService implements ClientService {
 
     @Override
     public Integer getCurrentClientId() {
-        final var token = getAuthToken(request);
+        final var token = authTokenOrNull(request);
         if (token == null) {
             throw unauthorizedException();
         }

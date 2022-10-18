@@ -3,8 +3,7 @@ package bank.auth;
 import static bank.exception.auth.SessionHasExpiredException.sessionHasExpiredException;
 import static bank.exception.auth.UnauthorizedException.unauthorizedException;
 import static bank.jooq.generated.model.tables.CardSession.CARD_SESSION;
-import static java.util.Arrays.stream;
-import static java.util.Optional.ofNullable;
+import static bank.util.TokenUtil.authTokenOrNull;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -19,7 +18,6 @@ import java.util.Set;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -42,7 +40,7 @@ public class TokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        final var token = authCookie(request);
+        final var token = authTokenOrNull(request);
         if (token == null) {
             errorResponse(response, unauthorizedException());
             return;
@@ -76,21 +74,6 @@ public class TokenFilter extends OncePerRequestFilter {
         final var pathMatcher = new AntPathMatcher();
         return AUTH_WHITELIST.stream()
                 .anyMatch(p -> pathMatcher.match(p, request.getServletPath()));
-    }
-
-    private String authCookie(HttpServletRequest request) {
-        final var token = request.getHeader("Authorization");
-        if (token != null) {
-            return token;
-        }
-
-        final var cookies = ofNullable(request.getCookies())
-                .orElse(new Cookie[]{});
-        return stream(cookies)
-                .filter(it -> "Authorization".equals(it.getName()))
-                .map(Cookie::getValue)
-                .findAny()
-                .orElse(null);
     }
 
     @SneakyThrows

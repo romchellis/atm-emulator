@@ -9,6 +9,9 @@ import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Interceptor for maintain session between atm and bank
+ */
 @Component
 @RequiredArgsConstructor
 public class FeignClientInterceptor implements RequestInterceptor {

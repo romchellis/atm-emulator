@@ -39,7 +39,7 @@ public class AuthController implements AuthApi {
 
     @Override
     public PreferableLoginMethodResult setPreferableLoginMethod(PreferableLoginMethodRequest request) {
-        throw new UnsupportedOperationException();
+        return authService.setPreferableLoginMethod(request);
     }
 
 }
